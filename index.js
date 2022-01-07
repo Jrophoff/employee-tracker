@@ -194,8 +194,8 @@ async function addRole() {
         },
       ])
       .then(function (res) {
-        const deptId = res.deptRole;
-        deptId.split(' ');
+        const deptData = res.deptRole;
+        deptId = deptData.split(' ');
         db.query(
           'INSERT INTO employee_role SET ?',
           {
@@ -218,13 +218,14 @@ async function addRole() {
 // update role
 async function updateEmployeeRole() {
   try {
-    const [data] = await viewAllEmployees();
+    const [employeeData] = await viewAllEmployees();
+    const [roleData] = await viewAllRoles();
 
-    const employeeObj = data.map(
-      (data) => data.id + ' ' + data.first_name + ' ' + data.last_name
+    const employeeObj = employeeData.map(
+      (employeeData) => employeeData.id + ' ' + employeeData.first_name + ' ' + employeeData.last_name
     );
-    const roleObj = data.map((data) => data.id + ' ' + data.title);
-
+    const roleObj = roleData.map((roleData) => roleData.id + ' ' + roleData.title);
+console.log(roleData)
     var answers = await inquirer
       .prompt([
         {
@@ -241,10 +242,10 @@ async function updateEmployeeRole() {
         },
       ])
       .then(function (res) {
-        const employeeId = res.employee;
-        employeeId.split(' ');
-        const roleId = res.role;
-        roleId.split(' ');
+        const employeeData = res.employee;
+        employeeId = employeeData.split(' ');
+        const roleData = res.role;
+        roleId = roleData.split(' ');
         db.query(
           'UPDATE employee SET ? WHERE ?',
           [
@@ -271,11 +272,12 @@ async function updateEmployeeRole() {
 // add employee
 async function addEmployee() {
   try {
-    const [data] = await viewAllEmployees();
+    const [roleData] = await viewAllRoles();
+    const [employeeData] = await viewAllEmployees();
 
-    const titleObj = data.map((data) => data.id + ' ' + data.title);
-    const managerObj = data.map(
-      (data) => data.id + ' ' + data.first_name + ' ' + data.last_name
+    const titleObj = roleData.map((roleData) => roleData.id + ' ' + roleData.title);
+    const managerObj = employeeData.map(
+      (employeeData) => employeeData.id + ' ' + employeeData.first_name + ' ' + employeeData.last_name
     );
     managerObj.push(' none');
 
@@ -321,10 +323,10 @@ async function addEmployee() {
         },
       ])
       .then(function (res) {
-        const roleId = res.deptRole;
-        roleId.split(' ');
-        const managerId = res.manager;
-        managerId.split(' ');
+        const roleData = res.deptRole;
+        roleId = roleData.split(' ');
+        const managerData = res.manager;
+        managerId = managerData.split(' ');
 
         db.query(
           'INSERT INTO employee SET ?',
