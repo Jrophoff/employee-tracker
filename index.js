@@ -1,145 +1,349 @@
 // dependencies
 const inquirer = require('inquirer');
-var Table = require('easy-table')
-const db = require('./db/connection')
+const db = require('./db/connection');
+
+console.log(`
+
+ ______   ______   ______   ______   ______   ______   ______   ______   ______ 
+|______| |______| |______| |______| |______| |______| |______| |______| |______|
+ _         ______                       _                                     _ 
+| |       |  ____|                     | |                                   | |
+| |       | |__     _ __ ___    _ __   | |   ___    _   _    ___    ___      | |
+| |       |  __|   | '_ ' _ |  | '_ |  | |  / _ |  | | | |  / _ |  / _ |     | |
+| |       | |____  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/     | |
+| |       |______| |_| |_| |_| | .__/  |_|  |___/   |__, |  |___|  |___|     | |
+| |                            | |                   __/ |                   | |
+|_|                            |_|                  |___/                    |_|
+ _         __  __                                                             _ 
+| |       |  |/  |                                                           | |
+| |       | |  / |   __ _   _ __     __ _    __ _    ___   _ __              | |
+| |       | ||/| |  / _' | | '_ |   / _' |  / _' |  / _ | | '__|             | |
+| |       | |  | | | (_| | | | | | | (_| | | (_| | |  __/ | |                | |
+| |       |_|  |_|  |__,_| |_| |_|  |__,_|  |__, |  |___| |_|                | |
+| |                                          __/ |                           | |
+|_|                                         |___/                            |_|
+ ______   ______   ______   ______   ______   ______   ______   ______   ______ 
+|______| |______| |______| |______| |______| |______| |______| |______| |______|
+                                                                                                                                                      
+
+
+
+`);
 
 // inquire prompt
 const beginPrompt = () => {
-
-    console.log(`
-
-    ______   ______   ______   ______   ______   ______   ______   ______   ______ 
-   |______| |______| |______| |______| |______| |______| |______| |______| |______|
-    _         ______                       _                                     _ 
-   | |       |  ____|                     | |                                   | |
-   | |       | |__     _ __ ___    _ __   | |   ___    _   _    ___    ___      | |
-   | |       |  __|   | '_ ' _ |  | '_ |  | |  / _ |  | | | |  / _ |  / _ |     | |
-   | |       | |____  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/     | |
-   | |       |______| |_| |_| |_| | .__/  |_|  |___/   |__, |  |___|  |___|     | |
-   | |                            | |                   __/ |                   | |
-   |_|                            |_|                  |___/                    |_|
-    _         __  __                                                             _ 
-   | |       |  |/  |                                                           | |
-   | |       | |  / |   __ _   _ __     __ _    __ _    ___   _ __              | |
-   | |       | ||/| |  / _' | | '_ |   / _' |  / _' |  / _ | | '__|             | |
-   | |       | |  | | | (_| | | | | | | (_| | | (_| | |  __/ | |                | |
-   | |       |_|  |_|  |__,_| |_| |_|  |__,_|  |__, |  |___| |_|                | |
-   | |                                          __/ |                           | |
-   |_|                                         |___/                            |_|
-    ______   ______   ______   ______   ______   ______   ______   ______   ______ 
-   |______| |______| |______| |______| |______| |______| |______| |______| |______|
-                                                                                                                                                          
-   
-   
-   
-   `);
-    return inquirer.prompt([
-        {
-            type: 'list',
-            name: 'option',
-            message: 'What would you like to do?',
-            choices: [
-                'View All Employees',
-                'Add Employee',
-                'Update Employee Role',
-                'View All Roles',
-                'Add Role',
-                'View All Departments',
-                'Add Department',
-                'Quit'
-            ]
-        },
-    ]).then(answer => {
-        var option = answer.option;
-        switch (option) {
-            case 'View All Employees':
-                viewAllEmployees();
-                break;
-            // case 'Add Employee':
-            //     addEmployee();
-            //     break;
-            // case 'Update Employee Role':
-            //     updateEmployeeRole();
-            //     break;
-            case 'View All Roles':
-                viewAllRoles();
-                break;
-            // case 'Add Role':
-            //     addRole();
-            //     break;
-            case 'View All Departments':
-                viewAllDepartments();
-                break;
-            // case 'Add Department':
-            //     addDepartment();
-            //     break            
-            // case 'Quit':
-            //     quit();
-            //     break;
-        }
-    })
-}
+  return inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'option',
+        message: 'What would you like to do?',
+        choices: [
+          'View All Employees',
+          'Add Employee',
+          'Update Employee Role',
+          'View All Roles',
+          'Add Role',
+          'View All Departments',
+          'Add Department',
+        ],
+      },
+    ])
+    .then((answer) => {
+      var option = answer.option;
+      switch (option) {
+        case 'View All Employees':
+          viewAllEmployees().then(([data]) => {
+            console.table(data);
+            beginPrompt();
+          });
+          break;
+        case 'Add Employee':
+          addEmployee();
+          break;
+        case 'Update Employee Role':
+          updateEmployeeRole();
+          break;
+        case 'View All Roles':
+          viewAllRoles().then(([data]) => {
+            console.table(data);
+            beginPrompt();
+          });
+          break;
+        case 'Add Role':
+          addRole();
+          break;
+        case 'View All Departments':
+          viewAllDepartments().then(([data]) => {
+            console.table(data);
+            beginPrompt();
+          });
+          break;
+        case 'Add Department':
+          addDepartment();
+          break;
+      }
+    });
+};
 
 // view all employees
 function viewAllEmployees() {
-    db.query(`SELECT employee.*, employee_role.*, department.*
+  return db.promise()
+    .query(`SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary, department.branch, 
+                CONCAT (m.first_name, ' ', m.last_name) AS manager
                 FROM employee
                 JOIN employee_role
-                ON employee.role_id = employee_role.employee_role_id
+                ON employee.role_id = employee_role.id
                 JOIN department
-                ON department.department_id = employee_role.dept_id`, 
-                function (err, data) {
-        if (err) throw err;
-        var t = new Table
-        data.forEach(function (data) {
-            t.cell('ID', data.employee_id)
-            t.cell('First name', data.first_name)
-            t.cell('Last name', data.last_name)
-            t.cell('Title', data.title)
-            t.cell('Branch', data.branch)
-            t.cell('Salary', data.salary)
-            t.newRow()
-        })
-        console.log(t.toString());
-    })
-
+                ON department.id = employee_role.dept_id
+                LEFT JOIN employee m ON m.id = employee.manager_id`);
 }
 
 // view all departments
 function viewAllDepartments() {
-    db.query(`SELECT * FROM department`, function (err, data) {
-        if (err) throw err;
-        var t = new Table
-        data.forEach(function (data) {
-            t.cell('ID', data.department_id)
-            t.cell('Department Branch', data.branch)
-            t.newRow()
-        })
-        console.log(t.toString())
-    })
+  return db.promise().query(`SELECT * FROM department`);
 }
 
 // view all roles
 function viewAllRoles() {
-    db.query(`SELECT employee_role.*, department.branch 
+  return db.promise()
+    .query(`SELECT employee_role.id, employee_role.title, department.branch, employee_role.salary  
                 FROM employee_role 
                 JOIN department 
-                ON employee_role.dept_id = department.department_id`, 
-                function (err, data) {
-        if (err) throw err;
-        var t = new Table
-        data.forEach(function (data) {
-            t.cell('ID', data.employee_role_id)
-            t.cell('Title', data.title)
-            t.cell('Department', data.branch)
-            t.cell('Salary', data.salary)
-            t.newRow()
-        })
-        console.log(t.toString())
-    })
+                ON employee_role.dept_id = department.id`);
 }
+
+// add department
+async function addDepartment() {
+  try {
+    var answers = await inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'departmentName',
+          message: 'What is the name of the department? (required)',
+          validate: (departmentNameInput) => {
+            if (departmentNameInput) {
+              return true;
+            } else {
+              console.log('Please enter the department name!');
+              return false;
+            }
+          },
+        },
+      ])
+      .then(function (res) {
+        db.query(
+          'INSERT INTO department SET ?',
+          {
+            branch: res.departmentName,
+          },
+          function (err) {
+            if (err) throw err;
+            beginPrompt();
+          }
+        );
+      });
+  } catch (error) {
+    console.log('Department Not Added!');
+  }
+}
+
+// add role
+
+async function addRole() {
+  try {
+    const [data] = await viewAllDepartments();
+
+    const object = data.map((data) => data.id + ' ' + data.branch);
+
+    var answers = await inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'roleName',
+          message: 'What is the name of this role? (required)',
+          validate: (roleNameInput) => {
+            if (roleNameInput) {
+              return true;
+            } else {
+              console.log('Please enter the role name!');
+              return false;
+            }
+          },
+        },
+
+        {
+          type: 'input',
+          name: 'roleSalary',
+          message: 'What is the salary for this role? (required)',
+          validate: (roleSalaryInput) => {
+            if (roleSalaryInput) {
+              return true;
+            } else {
+              console.log('Please enter the role salary!');
+              return false;
+            }
+          },
+        },
+        {
+          type: 'list',
+          name: 'deptRole',
+          message: 'What department does this role belong to?',
+          choices: object,
+        },
+      ])
+      .then(function (res) {
+        const deptId = res.deptRole;
+        deptId.split(' ');
+        db.query(
+          'INSERT INTO employee_role SET ?',
+          {
+            title: res.roleName,
+            salary: res.roleSalary,
+            dept_id: deptId[0],
+          },
+
+          function (err) {
+            if (err) throw err;
+            beginPrompt();
+          }
+        );
+      });
+  } catch (error) {
+    console.log('Error! Role not added!');
+  }
+}
+
+// update role
+async function updateEmployeeRole() {
+  try {
+    const [data] = await viewAllEmployees();
+
+    const employeeObj = data.map(
+      (data) => data.id + ' ' + data.first_name + ' ' + data.last_name
+    );
+    const roleObj = data.map((data) => data.id + ' ' + data.title);
+
+    var answers = await inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'employee',
+          message: "Which employee's role do you want to update?",
+          choices: employeeObj,
+        },
+        {
+          type: 'list',
+          name: 'role',
+          message: 'Which role do you want to assign to the selected employee?',
+          choices: roleObj,
+        },
+      ])
+      .then(function (res) {
+        const employeeId = res.employee;
+        employeeId.split(' ');
+        const roleId = res.role;
+        roleId.split(' ');
+        db.query(
+          'UPDATE employee SET ? WHERE ?',
+          [
+            {
+            role_id: roleId[0],
+          },
+          {
+            id: employeeId[0],
+          },
+        ],
+
+          function (err) {
+            if (err) throw err;
+            beginPrompt();
+          }
+        );
+      });
+  } catch (error) {
+    console.log('Error! Role not updated!');
+    beginPrompt();
+  }
+}
+
+// add employee
+async function addEmployee() {
+  try {
+    const [data] = await viewAllEmployees();
+
+    const titleObj = data.map((data) => data.id + ' ' + data.title);
+    const managerObj = data.map(
+      (data) => data.id + ' ' + data.first_name + ' ' + data.last_name
+    );
+    managerObj.push(' none');
+
+    var answers = await inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'firstName',
+          message: "What is the employee's first name? (required)",
+          validate: (firstNameInput) => {
+            if (firstNameInput) {
+              return true;
+            } else {
+              console.log("Please enter the employee's first name!");
+              return false;
+            }
+          },
+        },
+        {
+          type: 'input',
+          name: 'lastName',
+          message: "What is the employee's last name? (required)",
+          validate: (lastNameInput) => {
+            if (lastNameInput) {
+              return true;
+            } else {
+              console.log("Please enter the employee's last name!");
+              return false;
+            }
+          },
+        },
+        {
+          type: 'list',
+          name: 'deptRole',
+          message: 'What title goes with thie role?',
+          choices: titleObj,
+        },
+        {
+          type: 'list',
+          name: 'manager',
+          message: "Who is the employee's manager?",
+          choices: managerObj,
+        },
+      ])
+      .then(function (res) {
+        const roleId = res.deptRole;
+        roleId.split(' ');
+        const managerId = res.manager;
+        managerId.split(' ');
+
+        db.query(
+          'INSERT INTO employee SET ?',
+          {
+            first_name: res.firstName,
+            last_name: res.lastName,
+            role_id: roleId[0],
+            manager_id: managerId[0],
+          },
+          function (err) {
+            if (err) throw err;
+            beginPrompt();
+          }
+        );
+      });
+  } catch (error) {
+    console.log('Error! Employee not added!');
+    beginPrompt();
+  }
+}
+
 beginPrompt();
-
-
-
-
