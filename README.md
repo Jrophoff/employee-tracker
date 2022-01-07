@@ -25,7 +25,9 @@
 
 ## Usage
 
-#### type node index into the command line and follow prompts.
+#### Type node index into the command line and follow prompts. Please view the following walkthrough video:
+
+https://watch.screencastify.com/v/vhiPqGj8Y7t3tYK7GZAe
 
 ## Screenshot
 
