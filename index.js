@@ -279,7 +279,7 @@ async function addEmployee() {
     const managerObj = employeeData.map(
       (employeeData) => employeeData.id + ' ' + employeeData.first_name + ' ' + employeeData.last_name
     );
-    managerObj.push(' none');
+    managerObj.push('0 none');
 
     var answers = await inquirer
       .prompt([
